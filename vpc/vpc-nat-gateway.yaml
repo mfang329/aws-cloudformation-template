@@ -26,6 +26,7 @@ Parameters:
     - C
     - D
     - E
+    - F
 Resources:
   EIP:
     Type: 'AWS::EC2::EIP'
@@ -37,6 +38,14 @@ Resources:
       AllocationId: !GetAtt 'EIP.AllocationId'
       SubnetId:
         'Fn::ImportValue': !Sub '${ParentVPCStack}-Subnet${SubnetZone}Public'
+      Tags:
+      - Key: Name
+        Value: !Ref "AWS::StackName"
+      - Key: Region
+        Value: !Ref "AWS::Region"
+      - Key: Environment
+        Value: !Select [2, !Split ["-", !Ref "AWS::StackName"]]  
+   
   Route:
     Type: AWS::EC2::Route
     Properties:
