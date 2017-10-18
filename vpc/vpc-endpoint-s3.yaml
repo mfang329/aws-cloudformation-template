@@ -30,6 +30,8 @@ Outputs:
   StackName:
     Description: 'Stack name'
     Value: !Sub '${AWS::StackName}'
+    Export:
+      Name: !Sub '${AWS::StackName}'
   Endpoint:
     Description: 'The VPC endpoint to S3.'
     Value: !Ref EndpointS3
