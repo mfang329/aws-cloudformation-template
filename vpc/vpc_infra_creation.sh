@@ -5,6 +5,9 @@
 #
 # Usage: ./vpc_infra_creation {Profile} {Region} {VPC Name} {classB address}
 #
+#
+#  Modify by: Ming Fang
+#  Date:      10/18/2017
 
 set -euo pipefail
 # set -x
@@ -47,7 +50,7 @@ cf_status_check() {
   status=$( echo ${stack} | jq -r ".Stacks[].StackStatus" )
   if [[ "${status}" != "${cf_stack_complete}" ]]; then
   	echo "Waiting on ${stk} stack creation: ${status} - $(date "+TIME: %H:%M:%S")"
-  	sleep 10
+  	sleep 15
   else 
     echo  -e "${stk} is created successfully - $(date "+TIME: %H:%M:%S") \n"
     break
@@ -61,7 +64,8 @@ done
 # 2. Create VPC basic infrastructure
 aws cloudformation create-stack --profile ${profile} --region ${region} --stack-name ${vpc_name} \
                                 --template-body file://${vpc_cf} --parameters \
-                                ParameterKey=ClassB,ParameterValue=${classB}
+                                ParameterKey=ClassB,ParameterValue=${classB} \
+                                --enable-termination-protection
 
 # 3. Verify VPC is complete
 cf_status_check ${profile} ${region} ${vpc_name}
@@ -75,7 +79,8 @@ for (( i = 0; i < ${num_AZs}; i++ )); do
   aws cloudformation create-stack --profile ${profile} --region ${region} --stack-name ${natGW_name}-${az} \
                                   --template-body file://${natgateway_cf} --parameters \
                                   ParameterKey=ParentVPCStack,ParameterValue=${vpc_name} \
-                         		  ParameterKey=SubnetZone,ParameterValue=${az} 
+                         		  ParameterKey=SubnetZone,ParameterValue=${az}  \
+                         		  --enable-termination-protection
 done
 
 # Verify NatGateway is complete
@@ -87,7 +92,8 @@ done
 # 5. Create VPC endpoint service
 aws cloudformation create-stack --profile ${profile} --region ${region} --stack-name ${vpce_name} \
                                 --template-body file://${vpce_cf} --parameters \
-                                 ParameterKey=ParentVPCStack,ParameterValue=${vpc_name} 
+                                ParameterKey=ParentVPCStack,ParameterValue=${vpc_name} \
+                                --enable-termination-protection
 
 # 6. Verify S3 is complete
 cf_status_check ${profile} ${region} ${vpce_name}
