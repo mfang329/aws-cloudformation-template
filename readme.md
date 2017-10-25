@@ -11,5 +11,6 @@ To get the details of the VPC layout and design look here, [VPC Infrastructure p
 
 
    VPC Design:
-   [[http://havokgit:7990/projects/DEVOPS/repos/aws-cloudformation-template/raw/vpc/drawing/VPC%20with%203AZs%20and%203%20Tiers%20Diagram.png?at=refs%2Fheads%2Fmaster]]
+   ![alt image](http://havokgit:7990/projects/DEVOPS/repos/aws-cloudformation-template/raw/vpc/drawing/VPC%20with%203AZs%20and%203%20Tiers%20Diagram.png)
+   
 ---
