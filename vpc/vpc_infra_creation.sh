@@ -28,6 +28,7 @@ readonly vpc_cf="vpc-3azs-3tiers.yaml"
 readonly natgateway_cf="vpc-nat-gateway.yaml"
 readonly vpce_cf="vpc-endpoint-s3.yaml"
 readonly cf_stack_complete="CREATE_COMPLETE"
+readonly cf_stack_rollback="ROLLBACK_COMPLETE"
 readonly azs=(A B C D E F)
 readonly natGW_name="natGW-$( echo ${vpc_name} | sed s/vpc-//g )"
 readonly vpce_name="vpce-$( echo ${vpc_name} | sed s/vpc-//g )"
@@ -45,17 +46,19 @@ cf_status_check() {
  stk=${3}
 
  while [[ true ]]; do
-
   stack=$( aws cloudformation describe-stacks --profile ${prf} --region ${reg} --stack-name ${stk} )
   status=$( echo ${stack} | jq -r ".Stacks[].StackStatus" )
-  if [[ "${status}" != "${cf_stack_complete}" ]]; then
+
+  if [[ "${status}" != "${cf_stack_complete}" && "${status}" != "${cf_stack_rollback}" ]]; then
   	echo "Waiting on ${stk} stack creation: ${status} - $(date "+TIME: %H:%M:%S")"
   	sleep 15
-  else 
+  elif [[ "${status}" = "${cf_stack_rollback}" ]]; then
+    printf "%s has failed due to: %s \n" "${stk}" "${status}"
+    exit 1
+  else  
     echo  -e "${stk} is created successfully - $(date "+TIME: %H:%M:%S") \n"
     break
   fi
-
 done
 }
 
