@@ -9,6 +9,7 @@ Folder structure and layout of the repository:
    This creates the basic VPC structure with network layers, Internet Gateway, NAT Gateway, ACL, and VPC Endpoint.
 To get the details of the VPC layout and design look here, [VPC Infrastructure provisioning and creating.](http://havokconfluence/display/DevOps/VPC+Infrastructure+provisioning+and+creating) 
 
-   ![VPC Overview Diagram](http://havokgit:7990/projects/DEVOPS/repos/aws-cloudformation-template/browse/vpc/drawing/VPC%20with%203AZs%20and%203%20Tiers%20Diagram.png)
+
+  ![VPC Design](/vpc/drawing/VPC with 3AZs and 3 Tiers Diagram.png?raw=true)
 
 ---
